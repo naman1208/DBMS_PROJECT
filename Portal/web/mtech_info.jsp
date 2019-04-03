@@ -10,7 +10,7 @@
     DriverManager.registerDriver(new com.mysql.jdbc.Driver());
     Connection con=DriverManager.getConnection("jdbc:mysql://localhost/portal","root","");
     PreparedStatement stmt;
-    ResultSet rs,rs2,rs3=null,rs4=null;
+    ResultSet rs,rs2,rs3=null,rs4=null,rs5=null;
     String msg="";
     int no=0,count=0,p=0,k=0,i=0;
     String old = session.getAttribute("pass").toString();
@@ -39,7 +39,7 @@
     rs2 = stmt.executeQuery();
     
     
-    stmt = con.prepareStatement("select count(*) from MtechThesis group by YearEnd desc");
+    stmt = con.prepareStatement("select count(distinct EnrollmentNo) from MtechThesis group by YearEnd desc");
     rs4 = stmt.executeQuery();
     
 
@@ -137,7 +137,7 @@
         </form><br>
         
         <% if(p==1) { %>
-        <h2>Mtech Thesis Supervised</h2>
+        <h2>MTech Thesis Supervised</h2>
             <% if (rs3.next() == false) { %>
             <h5>No M.Tech Entries for <%= tname %> completed in year <%= year %></h5> <%} else { %>
             <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4>
@@ -165,6 +165,44 @@
             <% }while(rs3.next()); }%>       
             </table> 
             <% }  %>
+            <hr>
+            
+            <table>
+                <h3>MTech Thesis Supervised</h3>
+                <tr>
+                    <th>S.no </th>
+                    <th>Student Name</th>
+                    <th>Thesis Title</th>
+                    <th>Supervisors</th>
+                    <th>Completion Year</th>
+                    
+                </tr>   
+            <% 
+                stmt = con.prepareStatement("select distinct EnrollmentNo,Title,Name,YearEnd from MtechThesis ");
+                rs4 = stmt.executeQuery();
+                no=0;
+                while(rs4.next()) {
+            %>
+            <tr>
+                <td><%=++no%></td>
+                <td><%=rs4.getString(3)%></td>
+                <td><%=rs4.getString(2)%></td>
+                <% stmt = con.prepareStatement("select Teacher.Name from Teacher inner join MtechThesis on MtechThesis.TID=Teacher.TID "
+                        + "where EnrollmentNo='"+
+                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"'");
+                   rs5 = stmt.executeQuery();
+                   String name = "";
+                   while(rs5.next()) {
+                       
+                        name += rs5.getString(1);
+                        name += ",";
+                    } name=name.substring(0, name.length() - 1);%>
+                    <td><%= name %></td>
+                    <td><%=rs4.getString(4)%></td>
+            </tr>
+            <% } %>
+            </table>
+            
         </div>
     </body>
 </html>

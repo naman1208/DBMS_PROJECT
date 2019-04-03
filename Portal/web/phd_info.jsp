@@ -10,7 +10,7 @@
     DriverManager.registerDriver(new com.mysql.jdbc.Driver());
     Connection con=DriverManager.getConnection("jdbc:mysql://localhost/portal","root","");
     PreparedStatement stmt;
-    ResultSet rs,rs2,rs3=null,rs4=null;
+    ResultSet rs,rs2,rs3=null,rs4=null,rs5;
     String msg="";
     int no=0,count=0,p=0,k=0,i=0;
     String old = session.getAttribute("pass").toString();
@@ -39,7 +39,7 @@
     rs2 = stmt.executeQuery();
     
     
-    stmt = con.prepareStatement("select count(*) from PhdThesis group by EYear desc");
+    stmt = con.prepareStatement("select count(distinct Enroll) from PhdThesis group by EYear desc");
     rs4 = stmt.executeQuery();
     
     if(request.getParameter("b1")!=null)
@@ -76,13 +76,23 @@
                 margin-left: 200px;
                 size: 100px;
             }
+            table, th, td {
+                    border: 1px solid black;
+                    padding: 15px;
+                    text-align: center;
+                }
+                
+                table {
+                    background-color: #f1f1c1;
+                    border-spacing: 5px;
+                }
         </style>
         
     </head>
     <body>
         <jsp:include page="admin.jsp" />
         <div class="main">
-            <h3> Total number of Ph.D. yearwise</h3>
+            <h3> Total number of Ph.D. year-wise</h3>
             <table style="width: 98%;"> 
                     <caption>Sorted by End Year</caption>
                     <tr>
@@ -153,6 +163,42 @@
             <% }while(rs3.next()); }%>       
             </table> 
             <% }  %>
+            
+            <hr>
+            <table>
+                <h3>Ph.d Thesis Supervised</h3>
+                <tr>
+                    <th>S.no </th>
+                    <th>Student Name</th>
+                    <th>Thesis Title</th>
+                    <th>Supervisors</th>
+                    <th>Completion Year</th>
+                    
+                </tr>   
+            <% 
+                stmt = con.prepareStatement("select distinct Enroll,Title,Name,EYear from PhdThesis ");
+                rs4 = stmt.executeQuery();
+                no=0;
+                while(rs4.next()) {
+            %>
+            <tr>
+                <td><%=++no%></td>
+                <td><%=rs4.getString(3)%></td>
+                <td><%=rs4.getString(2)%></td>
+                <% stmt = con.prepareStatement("select Teacher.Name from Teacher inner join PhdThesis on PhdThesis.TID=Teacher.TID where Enroll='"+
+                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"'");
+                   rs5 = stmt.executeQuery();
+                   String name = "";
+                   while(rs5.next()) {
+                       
+                        name += rs5.getString(1);
+                        name += ",";
+                    } name=name.substring(0, name.length() - 1);%>
+                    <td><%= name %></td>
+                    <td><%=rs4.getString(4)%></td>
+            </tr>
+            <% } %>
+            </table>
         </div>
     </body>
 </html>

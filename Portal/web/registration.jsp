@@ -35,7 +35,7 @@
         if(request.getParameter("b1")!=null)
         {
             
-            stmt=con.prepareStatement("Insert into Teacher values(?,?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into Teacher values(?,?,?,?,?,?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t4"));
             stmt.setString(3,request.getParameter("t1"));
@@ -44,6 +44,7 @@
             stmt.setString(6,request.getParameter("t8"));
             stmt.setString(7,request.getParameter("t9"));
             stmt.setString(8,request.getParameter("t5"));
+            stmt.setString(9,request.getParameter("t10"));
             
             
             
@@ -181,7 +182,7 @@
                          <td>Correspondence Addr.:</td><td><input type="text" id="t9" name="t9" ></td><td></td>
                     </tr>
                     <tr>
-                         <td>Upload Image:</td><td><input type="file" id="t9" name="t9" ></td><td></td>
+                         <td>Upload Image:</td><td><input type="file" id="t10" name="t10" ></td><td></td>
                     </tr>
                    
                     <tr>

@@ -88,18 +88,16 @@
             }
         
   
-                table, th, td {
-                    border: 1px solid black;
-                    padding: 15px;
-                    text-align: center;
-                }
-                
-                table {
-                    background-color: #f1f1c1;
-                    border-spacing: 5px;
-                }
-              
+            table, th, td {
+                border: 1px solid black;
+                padding: 15px;
+                text-align: center;
+            }
 
+            table {
+                background-color: #f1f1c1;
+                border-spacing: 5px;
+            }
                 
             </style>
         

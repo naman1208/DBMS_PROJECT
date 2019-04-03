@@ -168,7 +168,7 @@
                  <div  id="sidebar_container">
                      <div class="sidebar" >
                          <center>
-                             <img src="Images/I1.jpg" width="190px" height="180px" align="left">
+                             <img src=Images/<%=rs.getString(9)%> width="190px" height="180px" align="left">
                     <h10><%= rs.getString(2) %></h10>
                     <br>
                     <h12><%= rs.getString(5) %></h12></br>

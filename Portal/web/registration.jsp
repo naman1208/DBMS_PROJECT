@@ -1,3 +1,13 @@
+<%@page import="java.net.URLEncoder"%>
+<%@page import="java.net.URL"%>
+<%@page import="java.net.URLConnection"%>
+<%@page import="javax.mail.MessagingException"%>
+<%@page import="javax.mail.Transport"%>
+<%@page import="javax.mail.Message"%>
+<%@page import="javax.mail.internet.InternetAddress"%>
+<%@page import="javax.mail.internet.MimeMessage"%>
+<%@page import="javax.mail.Session"%>
+<%@page import="java.util.Properties"%>
 <%@page import="java.io.InputStream"%>
 <%@page import="java.io.File"%>
 <%@page import="java.io.FileInputStream"%>
@@ -9,6 +19,9 @@
 
 <%@ page import ="java.sql.*" %>
 <%@ page import ="javax.sql.*" %>
+<%@ page import = "java.io.*,java.util.*,javax.mail.*"%>
+<%@ page import = "javax.mail.internet.*,javax.activation.*"%>
+<%@ page import = "javax.servlet.http.*,javax.servlet.*" %>
 
 
 <%
@@ -16,9 +29,9 @@
         Connection con=DriverManager.getConnection("jdbc:mysql://localhost/portal","root","");
         PreparedStatement stmt;
         ResultSet rs;
-        String msg="";
+        String masg="";
         InputStream is = null;
-        
+        int r;
         if(request.getParameter("b1")!=null)
         {
             
@@ -53,10 +66,11 @@
             stmt.setInt(7, 0);
             stmt.executeUpdate();
             
-        
-            msg="Registration Complete";
+              
             
-            response.sendRedirect("index.jsp");
+            masg="Registration Complete";
+            
+            response.sendRedirect("admin.jsp?tid="+session.getAttribute("tid"));
         }
         HttpSession hs=request.getSession(false);
         String ss="<a href='login'>Login</a>";
@@ -166,7 +180,9 @@
                     <tr>
                          <td>Correspondence Addr.:</td><td><input type="text" id="t9" name="t9" ></td><td></td>
                     </tr>
-                    
+                    <tr>
+                         <td>Upload Image:</td><td><input type="file" id="t9" name="t9" ></td><td></td>
+                    </tr>
                    
                     <tr>
                         <td></td><td><input type="submit" value="Register" name="b1" id="b1" onClick="return verifyData()"></td><td></td>

@@ -123,7 +123,6 @@
                   <ul  id="nav" class="nav navbar-nav sf-menu">
                     <li ><a href=teacher.jsp?tid=<%=tid%>>Basics</a></li>
                     <li><a href=awardsnachievements.jsp?tid=<%=tid%>>Awards and Achievements</a></li>
-                    <li><a href="researchinterests.php">Research Interests</a></li>
                     <li ><a class="active dropdown-toggle" data-toggle="dropdown">Publications
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -144,7 +143,6 @@
                     </li>
                     <li><a href=workshop.jsp?tid=<%=tid%>>Workshops</a></li>
                     <li><a href=courses_page.jsp?tid=<%=tid%>>Courses</a></li>
-                    <li><a href="fundedresearchprojects.php">Funded Research Projects</a>
                     <li ><a href=invited_talk.jsp?tid=<%=tid%>>Invited Talk</a></li>
                     <% if(tid!="null"){ %>
                     
@@ -197,9 +195,9 @@
                         <th>Publisher</th>
                     </tr>
                     <% do{ no++;
-                    start = rs2.getDate(4).toLocaleString();
+                    start = rs2.getDate(5).toLocaleString();
                     start = start.substring(0, start.length()-11);
-                    end = rs2.getDate(5).toLocaleString();
+                    end = rs2.getDate(6).toLocaleString();
                     end = end.substring(0, end.length()-11);    %>
                     
                     <tr>
@@ -207,9 +205,9 @@
                         <td><%= rs2.getString(2) %></td> 
                         <td><%= rs2.getString(3) %></td>
                         <td><%= start %> to <%= end %></td>
-                        <td><%= rs2.getString(6) %></td>
                         <td><%= rs2.getString(7) %></td>
                         <td><%= rs2.getString(8) %></td>
+                        <td><%= rs2.getString(9) %></td>
                         
                     </tr>
                     

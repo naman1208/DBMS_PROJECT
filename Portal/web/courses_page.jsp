@@ -107,17 +107,18 @@
                 <div id="menu_container" class="container-fluid">
                   <ul  id="nav" class="nav navbar-nav sf-menu">
                     <li ><a href=teacher.jsp?tid=<%=tid%>>Basics</a></li>
-                    <li><a href="awardsnachievements.jsp">Awards and Achievements</a></li>
-                    <li><a href="researchinterests.php">Research Interests</a></li>
-                    <li ><a class="dropdown-toggle" data-toggle="dropdown">Publications
+                    <li ><a href=awardsnachievements.jsp?tid=<%=tid%>>Awards and Achievements</a></li>
+                    
+                    <li ><a class="active dropdown-toggle" data-toggle="dropdown">Publications
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href=books.jsp?tid=<%=tid%> id="books" onclick="show('books')">Books (Chapters)</a></li>
-                        <li><a href="journals.jsp" onclick="show('journal')">Journal Papers</a></li>
-                        <li><a href="conferences.jsp" onclick="show('confrence')">Conference Proceedings</a></li>
+                        <li><a href=books_page.jsp?tid=<%=tid%> onclick="show('books')">Books</a></li>
+                        <li><a href=chapters_page.jsp?tid=<%=tid%> onclick="show('chapters')">Books Chapter</a></li>
+                        <li><a href=journals_page.jsp?tid=<%=tid%> onclick="show('journal')">Journal Papers</a></li>
+                        <li><a href=conferences_page.jsp?tid=<%=tid%> onclick="show('confrence')">Conference Proceedings</a></li>
                     </ul>
                     </li>
-                    <li><a class=" dropdown-toggle" data-toggle="dropdown">Thesis Supervised
+                    <li><a class="active dropdown-toggle" data-toggle="dropdown">Thesis Supervised
                         <span class="caret"></span></a></a>
                      <ul class="dropdown-menu">
                         <li><a href=phd_page.jsp?tid=<%=tid%> >Ph.D</a></li>
@@ -128,11 +129,11 @@
                     </li>
                     <li><a href=workshop.jsp?tid=<%=tid%>>Workshops</a></li>
                     <li class="active"><a href=courses_page.jsp?tid=<%=tid%>>Courses</a></li>
-                    <li><a href="fundedresearchprojects.php">Funded Research Projects</a>
+                    
                     <li ><a href=invited_talk.jsp?tid=<%=tid%>>Invited Talk</a></li>
                     <% if(tid!="null"){ %>
                     
-                    <li style="float:right;"><a href="index.jsp">Logout</a></li>
+                    <li style="float:right;"><a href="logout.jsp">Logout</a></li>
                     <li style="float:right;"><a href=course_form.jsp?tid=<%=tid%>>Add new</a></li>
                     
                     <% } %>
@@ -175,7 +176,7 @@
                         </br>
                             <%= no %>.
                             <a><%= rs2.getString(2) %></a>
-                        </br>
+                        
                     <% }while(rs2.next()); }%>       
                             
                  </div>

@@ -21,41 +21,30 @@
         }
         if(request.getParameter("b2")!=null)
         {
-            stmt=con.prepareStatement("Insert into Journals values(?,?,?,?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into Membership values(?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
-            stmt.setString(4,request.getParameter("t9"));
-            stmt.setString(5,request.getParameter("t3"));
-            stmt.setString(6,request.getParameter("t4"));
-            stmt.setString(7,request.getParameter("t5"));
-            stmt.setString(8,request.getParameter("t6"));
-            stmt.setString(9,request.getParameter("t7"));
-            stmt.setString(10,request.getParameter("t8"));
+            stmt.setString(4,request.getParameter("t3"));
             
             
             stmt.executeUpdate();
             msg="Expert form Complete";
             
-            response.sendRedirect("journals.jsp?tid="+tid);
+            response.sendRedirect("member_form.jsp?tid="+tid);
         }
         else if(request.getParameter("b1")!=null)
         {
-            stmt=con.prepareStatement("Insert into Journals values(?,?,?,?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into Membership values(?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
-            stmt.setString(4,request.getParameter("t9"));
-            stmt.setString(5,request.getParameter("t3"));
-            stmt.setString(6,request.getParameter("t4"));
-            stmt.setString(7,request.getParameter("t5"));
-            stmt.setString(8,request.getParameter("t6"));
-            stmt.setString(9,request.getParameter("t7"));
-            stmt.setString(10,request.getParameter("t8"));
+            stmt.setString(4,request.getParameter("t3"));
+            
             
             
             stmt.executeUpdate();
-            msg="Expert form Complete";
+            msg="Member form Complete";
             
             response.sendRedirect("teacher.jsp?tid="+tid);
         }
@@ -113,10 +102,10 @@
     <body>
         <img src="Images/Banner.jpg" width="100%"><hr>
         <div id="d1" style="width:100%;height:350px;">
-            <form method="post" action=journals.jsp?tid=<%=tid%>>
+            <form method="post" action=member_form.jsp?tid=<%=tid%>>
                 <table align="center">
                     <tr>
-                        <th colspan="3">Journals Published Form</th>
+                        <th colspan="3">Membership Form</th>
                     </tr>
                     
                     <br>
@@ -124,33 +113,14 @@
                         <td>Teacher ID:</td><td><input type="text" name="t0" value="<%= tid %>" id="t0" readonly="true"></td><td style="width:150px"><div id="d1"></div></td>
                     </tr>
                      <tr>
-                        <td>Paper Title:</td><td><input type="text" name="t1" id="t1" ></td><td></td>
+                        <td>Professional:</td><td><input type="text" name="t1" id="t1" ></td><td></td>
                     </tr>
                     <tr>
-                        <td>Journal Name:</td><td><input type="text" name="t2" id="t2" ></td><td></td>
+                        <td>Code:</td><td><input type="text" name="t2" id="t2" ></td><td></td>
                     </tr>
                     <tr>
-                        <td>Type:</td><td><input type="text" name="t9" id="t2" ></td><td></td>
+                        <td>Organisation:</td><td><input type="text" name="t3" id="t3" ></td><td></td>
                     </tr>
-                    <tr>
-                        <td>Co-Authors:</td><td><input type="text" name="t3" id="t3" ></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>ISSN No.:</td><td><input type="text" name="t4" id="t4" ></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>Publisher:</td><td><input type="text" name="t5" id="t4" ></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>Page Start:</td><td><input type="text" name="t6" id="t4" ></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>Page End:</td><td><input type="text" name="t7" id="t4" ></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>Year:</td><td><input type="number" name="t8" id="t5" ></td><td></td>
-                    </tr>
-                    
                     
 
                     <tr>

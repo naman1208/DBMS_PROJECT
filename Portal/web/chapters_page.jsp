@@ -116,9 +116,8 @@
                 <div id="menu_container" class="container-fluid">
                   <ul  id="nav" class="nav navbar-nav sf-menu">
                     <li ><a href=teacher.jsp?tid=<%=tid%>>Basics</a></li>
-                    <li><a href="awardsnachievements.jsp">Awards and Achievements</a></li>
-                    <li><a href="researchinterests.php">Research Interests</a></li>
-                    <li ><a class="dropdown-toggle" data-toggle="dropdown">Publications
+                    <li><a href=awardsnachievements.jsp?tid=<%=tid%>>Awards and Achievements</a></li>
+                    <li ><a class="active dropdown-toggle" data-toggle="dropdown">Publications
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href=books_page.jsp?tid=<%=tid%> onclick="show('books')">Books</a></li>
@@ -138,7 +137,6 @@
                     </li>
                     <li><a href=workshop.jsp?tid=<%=tid%>>Workshops</a></li>
                     <li><a href=courses_page.jsp?tid=<%=tid%>>Courses</a></li>
-                    <li><a href="fundedresearchprojects.php">Funded Research Projects</a>
                     <li ><a href=invited_talk.jsp?tid=<%=tid%>>Invited Talk</a></li>
                     <% if(tid!="null"){ %>
                     

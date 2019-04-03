@@ -21,15 +21,16 @@
         }
         if(request.getParameter("b2")!=null)
         {
-            stmt=con.prepareStatement("Insert into  Conferences values(?,?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into  Conferences values(?,?,?,?,?,?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
-            stmt.setString(4,request.getParameter("t3"));
-            stmt.setString(5,request.getParameter("t4"));
-            stmt.setString(6,request.getParameter("t5"));
-            stmt.setString(7,request.getParameter("t6"));
-            stmt.setString(8,request.getParameter("t7"));
+            stmt.setString(4,request.getParameter("t8"));
+            stmt.setString(5,request.getParameter("t3"));
+            stmt.setString(6,request.getParameter("t4"));
+            stmt.setString(7,request.getParameter("t5"));
+            stmt.setString(8,request.getParameter("t6"));
+            stmt.setString(9,request.getParameter("t7"));
             
             
             stmt.executeUpdate();
@@ -39,15 +40,16 @@
         }
         else if(request.getParameter("b1")!=null)
         {
-            stmt=con.prepareStatement("Insert into  Conferences values(?,?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into  Conferences values(?,?,?,?,?,?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
-            stmt.setString(4,request.getParameter("t3"));
-            stmt.setString(5,request.getParameter("t4"));
-            stmt.setString(6,request.getParameter("t5"));
-            stmt.setString(7,request.getParameter("t6"));
-            stmt.setString(8,request.getParameter("t7"));
+            stmt.setString(4,request.getParameter("t8"));
+            stmt.setString(5,request.getParameter("t3"));
+            stmt.setString(6,request.getParameter("t4"));
+            stmt.setString(7,request.getParameter("t5"));
+            stmt.setString(8,request.getParameter("t6"));
+            stmt.setString(9,request.getParameter("t7"));
             
             
             stmt.executeUpdate();
@@ -124,6 +126,9 @@
                     </tr>
                     <tr>
                         <td>Co-Authors:</td><td><input type="text" name="t2" id="t2" ></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Type:</td><td><input type="text" name="t8" id="t2" ></td><td></td>
                     </tr>
                     <tr>
                         <td>Start Date:</td><td><input type="date" name="t3" id="t3" ></td><td></td>

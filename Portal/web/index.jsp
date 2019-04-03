@@ -21,7 +21,7 @@
     
     if(request.getParameter("b1")!=null)
     {
-     ps = c.prepareStatement("select TID,UserPass from UserLogin where TID=? and UserPass=?");
+     ps = c.prepareStatement("select TID,UserPass from UserLogin where TID=? and UserPass=? and Type='Teacher'");
 	ps.setString(1, un);
 	ps.setString(2, pw);
  
@@ -61,7 +61,8 @@
                             <td>Password:</td><td><input type="password" id="t2" name="t2"></td><td></td>
                         </tr>
                         <tr>
-                            <td></td><td><input type="submit" id="b1" name="b1" value="Login"> <a href="registration.jsp">Registration</a></td><td></td>
+                            <td></td><td><input type="submit" id="b1" name="b1" value="Login"> 
+                            <a href="admin_login.jsp">Admin Login</a></td><td></td>
                         </tr>
                     </table></form>
                 </td>

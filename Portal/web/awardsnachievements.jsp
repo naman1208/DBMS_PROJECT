@@ -1,11 +1,7 @@
-<%-- 
-    Document   : teacher
-    Created on : Mar 3, 2019, 11:59:07 PM
-    Author     : DELL
---%>
+<%@page import="java.io.OutputStream"%>
+<%@page import="java.io.FileInputStream"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%@ page import ="java.sql.*" %>
 <%@ page import ="javax.sql.*" %>
@@ -15,9 +11,11 @@
     Class.forName("com.mysql.jdbc.Driver");
     Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/portal", "root", ""); 
     PreparedStatement ps,front;
-    ResultSet rs,rs2;
-    int no=0;
+    ResultSet rs,rs2,rs3;
     String p="",q="",r="";
+    int no=0,n=0;
+    OutputStream os = null;
+    byte byteArray[] = null;
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid");
     if(!((tid).equalsIgnoreCase(para)))
@@ -26,10 +24,14 @@
     }
     front=c.prepareStatement("select * from Teacher where TID='"+tid+"'");
     rs = front.executeQuery();
-    ps=c.prepareStatement("select * from Journals where TID='"+tid+"' order by Year asc;");
+    
+
+    
+    ps=c.prepareStatement("select * from ConferencesAndWorkshopsAttended where TID='"+tid+"'");
     rs2 = ps.executeQuery();
     
-    
+    ps=c.prepareStatement("select * from Membership where TID='"+tid+"'");
+    rs3 = ps.executeQuery();
     String site = "teacher.jsp?tid="+tid;
     
 %>    
@@ -75,7 +77,7 @@
                 
                 .content {
                   text-align: left;
-                  width: 900px;
+                  width: 700px;
                   margin: 0 0 15px 0;
                   float: left;
                   border: 1px solid #CCC;
@@ -85,38 +87,26 @@
                 }
                 
                 #site_content {
-                    width: 1200px;
+                    width: 1100px;
                     overflow: hidden;
                     margin: 0px auto 0 auto;
                     padding: 15px 0 25px 0;
                     text-shadow: 0 1px #FFF;
                   }
-                table, th, td {
-                    border: 1px solid black;
-                    padding: 15px;
-                    text-align: center;
-                }
                 
-                table {
-                    background-color: #f1f1c1;
-                    border-spacing: 5px;
-                }
-              
-
                 
             </style>
         </head>
         <body>
-            
-            
+             
             <div class ="container">
             <img src="Images/Banner.jpg" width="100%"><hr>
             <header>
             <nav class="navbar navbar-default">
                 <div id="menu_container" class="container-fluid">
                   <ul  id="nav" class="nav navbar-nav sf-menu">
-                    <li ><a href=teacher.jsp?tid=<%=tid%>>Basics</a></li>
-                    <li ><a href=awardsnachievements.jsp?tid=<%=tid%>>Awards and Achievements</a></li>
+                     <li ><a href=teacher.jsp?tid=<%=tid%>>Basics</a></li>
+                    <li class="active"><a href=awardsnachievements.jsp?tid=<%=tid%>>Awards and Achievements</a></li>
                     <li ><a class="active dropdown-toggle" data-toggle="dropdown">Publications
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -141,7 +131,7 @@
                     <% if(tid!="null"){ %>
                     
                     <li style="float:right;"><a href="logout.jsp">Logout</a></li>
-                    <li style="float:right;"><a href=journals.jsp?tid=<%=tid%>>Add new</a></li>
+                    
                     
                     <% } %>
                   </ul>
@@ -150,12 +140,13 @@
                 </div>
             </nav>
             </header>
-            <% while(rs.next()) { %>
+            
             <div id="site_content">
+                <% while(rs.next()) { %>
                  <div  id="sidebar_container">
                      <div class="sidebar" >
                          <center>
-                    <img src="Images/I1.jpg" width="190px" height="180px" align="left">
+                             <img src="Images/I1.jpg" width="190px" height="180px" align="left">
                     <h10><%= rs.getString(2) %></h10>
                     <br>
                     <h12><%= rs.getString(5) %></h12></br>
@@ -168,45 +159,48 @@
                     </br>
                     Telephone: <%= rs.getString(4) %></br>
                     <a href="shashankprofile.pdf" target="_blank">view full cv</a></center>
-                    <right><a href=basics.jsp?tid=<%=tid%> target="_blank">Edit</a></right>
+                    <right><a href=basics.jsp?tid=<%=tid%>>edit</a></right>
+                    <a href=change.jsp?tid=<%=tid%> style="margin-left:60px;">change password</a>
+
                     </div>
                  </div>
-            <% } %>
+               <% } %> 
                     
                 <div class="content"> 
-                    <h2>Journals Published</h2>
+                    <h2>Conferences and Workshop Attended</h2>
+                    <a href=conference_attended.jsp?tid=<%=tid%> style="float:right;margin-right:30px;">Add New</a></br>
                     <% if (rs2.next() == false) { %>
-                    <h5>Click Add new to update details </h5> <%} else { %>
-                    <table style="width: 95%;"> 
-                        <caption>Sorted by Year</caption>
-                    <tr>
-                        <th>S.No.</th>
-                        <th>Paper Title</th> 
-                        <th>Name of Journals</th> 
-                        <th>Co Author</th>
-                        <th>ISSN No.</th>
-                        <th>Publisher</th>
-                        <th>Pages</th>
-                        <th>Year</th>
-                    </tr>
-                    <% do{ no++; %>
-                    
-                    <tr>
-                        <td><%= no %></td>
-                        <td><%= rs2.getString(2) %></td> 
-                        <td><%= rs2.getString(3) %></td>
-                        <td><%= rs2.getString(5) %></td>
-                        <td><%= rs2.getString(6) %></td>
-                        <td><%= rs2.getString(7) %></td>
-                        <td><%= rs2.getString(8) %> - <%=rs2.getString(9)%></td>
-                        <td><%= rs2.getInt(10) %></td>
-                    </tr>
-                    
-                    </br>
-                    <% }while(rs2.next()); }%>       
-                    </table>        
+                    <h5>Click Add New to update details </h5> <%} else { 
+                        do{ n++; %>
+                        </br>
+                            <%= n %>.
+                            Name:<a><%= rs2.getString(2) %></a>&nbsp;
+                            Location:<a><%= rs2.getString(4) %></a>&nbsp;
+                            Date:<a><%= rs2.getString(3) %></a>&nbsp;
+                            
+                    <% }while(rs2.next()); }%> 
+                       
+                       </br>
                  </div>
-            </div>
+                       
+                 <div class="content"> 
+                    <h2>Membership</h2><a href=member_form.jsp?tid=<%=tid%> style="float:right;margin-right:30px;">Add New</a></br>
+                    <% if (rs3.next() == false) { %>
+                    <h5>Click Add new to update details </h5> <%} 
+                    else {
+                        
+                        do{ no++; %>
+                        </br>
+                            <%= no %>.
+                            <a><%= rs3.getString(2) %></a> at
+                            <a><%= rs3.getString(4) %></a> code(
+                            <a><%= rs3.getString(3) %>)</a>
+                        
+                    <% }while(rs3.next()); }%>       
+                            
+                 </div>      
+                   
+                </div>
             </div>
         <script type="text/javascript">
           $(document).ready(function() {

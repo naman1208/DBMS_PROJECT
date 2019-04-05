@@ -12,7 +12,7 @@
     PreparedStatement stmt;
     ResultSet rs,rs2,rs3=null,rs4=null,rs5=null;
     String msg="";
-    int no=0,count=0,p=0,k=0,i=0;
+    int no=0,count=0,p=0,k=0,i=0,m=0;
     String old = session.getAttribute("pass").toString();
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid").toString();
@@ -48,11 +48,19 @@
         tname = request.getParameter("teacher");
         year = request.getParameter("year");
         
-        
+        if(year.equalsIgnoreCase("All"))
+        {
+            stmt=con.prepareStatement("select * from MtechThesis where "
+                    + "TID=(select TID from Teacher where Name = ?) "
+                    + "order by YearEnd desc");
+            stmt.setString(1, tname);
+            m=1;
+        }
+        else{
         stmt=con.prepareStatement("select * from MtechThesis where TID=(select TID from Teacher where Name = ?) and "
                 + "YearEnd=? order by YearEnd desc");
         stmt.setString(1, tname);
-        stmt.setString(2, year);
+        stmt.setString(2, year);}
         rs3 = stmt.executeQuery();
         p=1;
         
@@ -109,11 +117,11 @@
                         <td><%= rs4.getInt(1) %></td>
                     </tr>
                     
-                    </br>
                     <% }%>       
             </table>
             
-            <hr><br>    
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" />
+            <br>    
         <form method="post" action=mtech_info.jsp?tid=<%=tid%>>    
             <label>Select Teacher :</label>
             <select name="teacher">    
@@ -124,7 +132,8 @@
         </select>
         <br>
         <label>Select Completion Year :</label>
-        <select name="year">    
+        <select name="year">
+            <option >All</option>
         <% while(rs2.next()){   %> 
         
         <option > <%=rs2.getString(1)%></option>
@@ -139,8 +148,10 @@
         <% if(p==1) { %>
         <h2>MTech Thesis Supervised</h2>
             <% if (rs3.next() == false) { %>
-            <h5>No M.Tech Entries for <%= tname %> completed in year <%= year %></h5> <%} else { %>
-            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4>
+            <h5>No M.Tech Entries for <%= tname %> completed in year <%= year %></h5> <%} 
+        else { if(m==1) {%>
+        <h4>by <%= tname %> completed till now</h4> <% } else { %>
+            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4><% } %>
             <h3>Count = <%=count%> </h3><br> 
             <table style="width: 98%;"> 
                 <caption>Sorted by End Year</caption>
@@ -161,11 +172,10 @@
                 <td><%= rs3.getInt(5) %></td>
             </tr>
 
-            </br>
             <% }while(rs3.next()); }%>       
             </table> 
             <% }  %>
-            <hr>
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" />
             
             <table>
                 <h3>MTech Thesis Supervised</h3>
@@ -178,7 +188,7 @@
                     
                 </tr>   
             <% 
-                stmt = con.prepareStatement("select distinct EnrollmentNo,Title,Name,YearEnd from MtechThesis ");
+                stmt = con.prepareStatement("select distinct EnrollmentNo,Title,Name,YearEnd from MtechThesis order by YearEnd");
                 rs4 = stmt.executeQuery();
                 no=0;
                 while(rs4.next()) {

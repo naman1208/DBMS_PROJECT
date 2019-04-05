@@ -24,17 +24,7 @@
     }
     front=c.prepareStatement("select * from Teacher where TID='"+tid+"'");
     rs = front.executeQuery();
-    
-//    if(rs.next())
-//    {
-//        Blob blob = rs.getBlob("Image");
-//        byteArray = blob.getBytes(1, (int) blob.length());
-//        response.setContentType("image");
-//        os = response.getOutputStream();
-//        os.write(byteArray);
-//        os.flush();
-//        os.close();
-//    }
+ 
     
     ps=c.prepareStatement("select * from Education where TID='"+tid+"'");
     rs2 = ps.executeQuery();

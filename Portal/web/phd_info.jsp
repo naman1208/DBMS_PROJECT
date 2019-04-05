@@ -10,9 +10,9 @@
     DriverManager.registerDriver(new com.mysql.jdbc.Driver());
     Connection con=DriverManager.getConnection("jdbc:mysql://localhost/portal","root","");
     PreparedStatement stmt;
-    ResultSet rs,rs2,rs3=null,rs4=null,rs5;
+    ResultSet rs,rs2,rs3=null,rs4=null,rs5,rs6;
     String msg="";
-    int no=0,count=0,p=0,k=0,i=0;
+    int no=0,count=0,p=0,k=0,i=0,m=0;
     String old = session.getAttribute("pass").toString();
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid").toString();
@@ -45,19 +45,38 @@
     if(request.getParameter("b1")!=null)
     {
         tname = request.getParameter("teacher");
+        
         year = request.getParameter("year");
         
         
+        if(year.equalsIgnoreCase("All"))
+        {
+            stmt=con.prepareStatement("select * from PhdThesis "
+                    + "where TID=(select TID from Teacher where Name = ?)  "
+                    + "order by EYear desc");
+            stmt.setString(1, tname);
+            m=1;
+            
+        }
+        else{
         stmt=con.prepareStatement("select * from PhdThesis where TID=(select TID from Teacher where Name = ?) and "
                 + "EYear=? order by EYear desc");
         stmt.setString(1, tname);
         stmt.setString(2, year);
+        }
+        
+        
         rs3 = stmt.executeQuery();
+        
+        
         p=1;
         
         
-        while(rs3.next()){
-            count++;}
+            while(rs3.next())
+            {
+                count++;
+            }
+        
         
         rs3 = stmt.executeQuery();
     }
@@ -71,7 +90,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         
-        <style>
+        <style type="text/css">
             .main{
                 margin-left: 200px;
                 size: 100px;
@@ -80,12 +99,17 @@
                     border: 1px solid black;
                     padding: 15px;
                     text-align: center;
+                    
                 }
                 
                 table {
                     background-color: #f1f1c1;
                     border-spacing: 5px;
+                    overflow: auto;
                 }
+                
+                
+             
         </style>
         
     </head>
@@ -111,7 +135,7 @@
                     <% }%>       
             </table>
             
-            <hr><br>
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" /><br>
         <form method="post" action=phd_info.jsp?tid=<%=tid%>>    
             <label>Select Teacher :</label>
             <select name="teacher">    
@@ -123,10 +147,11 @@
         <br>
         <label>Select Completion Year :</label>
         <select name="year">    
+            <option>All</option>
         <% while(rs2.next()){   %> 
         
         <option> <%=rs2.getString(1)%></option>
-        <% } %>
+        <% }  %>
             </select><br>
             
         
@@ -135,11 +160,14 @@
         </form><br>
         
         <% if(p==1) { %>
-        <h2>Ph.D Thesis Supervised</h2>
-            <% if (rs3.next() == false) { %>
-            <h5>No Ph.D Entries for <%= tname %> completed in year <%= year %></h5> <%} else { %>
-            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4>
-            <h3>Count = <%=count%> </h3><br> 
+        <h2>Ph.D Thesis Supervised </h2>
+            <% if (!rs3.next()) {%>
+            <h5>No Ph.D Entries for <%= tname %> completed in year <%= year %></h5> 
+            <% } else{ if(m==1)  {%>
+            
+            <h4>by <%= tname %> completed till now</h4> <% } else  { %>
+            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4> <%  }  %>
+            <h3>Count = <%=count%> </h3>
             <table style="width: 98%;"> 
                 <caption>Sorted by End Year</caption>
             <tr>
@@ -162,11 +190,10 @@
             </br>
             <% }while(rs3.next()); }%>       
             </table> 
-            <% }  %>
-            
-            <hr>
+            <% } %>
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" />
             <table>
-                <h3>Ph.d Thesis Supervised</h3>
+                <h3>Ph.d Thesis Supervised (<%=a[k-1] %> - <%=a[0] %>)</h3>
                 <tr>
                     <th>S.no </th>
                     <th>Student Name</th>
@@ -176,7 +203,7 @@
                     
                 </tr>   
             <% 
-                stmt = con.prepareStatement("select distinct Enroll,Title,Name,EYear from PhdThesis ");
+                stmt = con.prepareStatement("select distinct Enroll,Title,Name,EYear from PhdThesis order by EYear");
                 rs4 = stmt.executeQuery();
                 no=0;
                 while(rs4.next()) {
@@ -186,7 +213,7 @@
                 <td><%=rs4.getString(3)%></td>
                 <td><%=rs4.getString(2)%></td>
                 <% stmt = con.prepareStatement("select Teacher.Name from Teacher inner join PhdThesis on PhdThesis.TID=Teacher.TID where Enroll='"+
-                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"'");
+                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"' and EYear="+ rs4.getString(4));
                    rs5 = stmt.executeQuery();
                    String name = "";
                    while(rs5.next()) {
@@ -199,6 +226,91 @@
             </tr>
             <% } %>
             </table>
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" />
+            <table>
+                <h3>Ph.d Thesis Awarded (<%=a[k-1] %> - <%=a[0] %>)</h3>
+                <tr>
+                    <th>S.no </th>
+                    <th>Faculty Name</th>
+                    <th>Thesis Title</th>
+                    <th>Supervisors</th>
+                    <th>Month & Year</th>
+                    
+                </tr>   
+            <% 
+                stmt = con.prepareStatement("select distinct Enroll,Title,Name,AwardYear,EYear from PhdThesis ");
+                rs4 = stmt.executeQuery();
+                no=0;
+                while(rs4.next()) {
+                    if(rs4.getString(4).equalsIgnoreCase(""))
+                    continue;
+                    stmt = con.prepareStatement("select TID from Teacher where Name = '"+rs4.getString(3)+"'");
+                    rs6 = stmt.executeQuery();
+                    if(!(rs6.next()))
+                    continue;
+            %>
+            <tr>
+                <td><%=++no%></td>
+                <td><%=rs4.getString(3)%></td>
+                <td><%=rs4.getString(2)%></td>
+                <% stmt = con.prepareStatement("select Teacher.Name from Teacher inner join PhdThesis on PhdThesis.TID=Teacher.TID where Enroll='"+
+                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"' and EYear="+ rs4.getString(5));
+                   rs5 = stmt.executeQuery();
+                   String name = "";
+                   while(rs5.next()) {
+                       
+                        name += rs5.getString(1);
+                        name += ",";
+                    } name=name.substring(0, name.length() - 1);%>
+                    <td><%= name %></td>
+                    <td><%=rs4.getString(4)%></td>
+            </tr>
+            <% } %>
+            </table>
+            
+            <hr />
+            <table>
+                
+                <tr>
+                    <th>S.no </th>
+                    <th>Student Name</th>
+                    <th>Thesis Title</th>
+                    <th>Supervisors</th>
+                    <th>Month & Year</th>
+                    
+                </tr>   
+            <% 
+                stmt = con.prepareStatement("select distinct Enroll,Title,Name,AwardYear,EYear from PhdThesis ");
+                rs4 = stmt.executeQuery();
+                no=0;
+                while(rs4.next()) {
+                    if(rs4.getString(4).equalsIgnoreCase(""))
+                    continue;
+                    stmt = con.prepareStatement("select TID from Teacher where Name = '"+rs4.getString(3)+"'");
+                    rs6 = stmt.executeQuery();
+                    if(rs6.next())
+                    continue;
+            %>
+            <tr>
+                <td><%=++no%></td>
+                <td><%=rs4.getString(3)%></td>
+                <td><%=rs4.getString(2)%></td>
+                <% stmt = con.prepareStatement("select Teacher.Name from Teacher inner join PhdThesis on PhdThesis.TID=Teacher.TID where Enroll='"+
+                        rs4.getString(1)+"' and Title='"+ rs4.getString(2)+"' and EYear="+ rs4.getString(5));
+                   rs5 = stmt.executeQuery();
+                   String name = "";
+                   while(rs5.next()) {
+                       
+                        name += rs5.getString(1);
+                        name += ",";
+                    } name=name.substring(0, name.length() - 1);%>
+                    <td><%= name %></td>
+                    <td><%=rs4.getString(4)%></td>
+            </tr>
+            <% } %>
+            </table>
+            
+            <hr style="height:3px;border:none;color:#333;background-color:#333;" />
         </div>
     </body>
 </html>

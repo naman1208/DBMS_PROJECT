@@ -22,6 +22,7 @@
             stmt.setString(4,request.getParameter("t3"));
             stmt.setString(5,request.getParameter("t4"));
             stmt.setString(6,request.getParameter("t5"));
+            stmt.setString(7,request.getParameter("t6"));
             
             stmt.executeUpdate();
            
@@ -37,6 +38,7 @@
             stmt.setString(4,request.getParameter("t3"));
             stmt.setString(5,request.getParameter("t4"));
             stmt.setString(6,request.getParameter("t5"));
+            stmt.setString(7,request.getParameter("t6"));
             
             stmt.executeUpdate();
            
@@ -87,6 +89,9 @@
                     </tr>
                     <tr>
                         <td>End Year:</td><td><input type="number" name="t5" id="t5" ></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Awarded Year:</td><td><input type="text" name="t6" id="t6" ></td><td></td>
                     </tr>
                     <tr>
                         <td></td><td><input type="submit" value="Submit" name="b1" id="b1" onClick="return verifyData()"></td><td></td>

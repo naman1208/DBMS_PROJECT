@@ -78,6 +78,8 @@
           <a href=mtech_info.jsp?tid=<%=tid%> >M.Tech Info</a>          
           <a href=phd_info.jsp?tid=<%=tid%>>Ph.D Info</a>
           <a href=publications_info.jsp?tid=<%=tid%>>Publications Info</a>
+          <a href=fdp_info.jsp?tid=<%=tid%>>Faculty Development Program</a>
+          <a href=fdp_train_info.jsp?tid=<%=tid%>>Faculty Development Training</a>
           <a href="logout.jsp">Logout</a>
             
         </div>

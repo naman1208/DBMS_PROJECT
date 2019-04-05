@@ -21,7 +21,7 @@
         }
         if(request.getParameter("b2")!=null)
         {
-            stmt=con.prepareStatement("Insert into WorkshopSeminarOrganised values(?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into WorkshopSeminarOrganised values(?,?,?,?,?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
@@ -29,6 +29,7 @@
             stmt.setString(5,request.getParameter("t4"));
             stmt.setString(6,request.getParameter("t5"));
             stmt.setString(7,request.getParameter("t6"));
+            stmt.setString(8,request.getParameter("t7"));
             
             
             stmt.executeUpdate();
@@ -38,7 +39,7 @@
         }
         else if(request.getParameter("b1")!=null)
         {
-            stmt=con.prepareStatement("Insert into WorkshopSeminarOrganised values(?,?,?,?,?,?,?)");
+            stmt=con.prepareStatement("Insert into WorkshopSeminarOrganised values(?,?,?,?,?,?,?,?)");
             stmt.setString(1,request.getParameter("t0"));
             stmt.setString(2,request.getParameter("t1"));
             stmt.setString(3,request.getParameter("t2"));
@@ -46,6 +47,7 @@
             stmt.setString(5,request.getParameter("t4"));
             stmt.setString(6,request.getParameter("t5"));
             stmt.setString(7,request.getParameter("t6"));
+            stmt.setString(8,request.getParameter("t7"));
             
             
             stmt.executeUpdate();
@@ -133,6 +135,9 @@
                     </tr>
                     <tr>
                         <td>Sponsor:</td><td><input type="text" name="t6" id="t6" ></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Type(Workshop/Conference):</td><td><input type="text" name="t7" id="t7" ></td><td></td>
                     </tr>
                     
 

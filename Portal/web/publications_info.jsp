@@ -81,7 +81,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         
-        <style>
+        <style type="text/css">
             .main{
                 margin-left: 200px;
                 size: 100px;
@@ -155,7 +155,7 @@
                     </br>
                            
             </table>
-                    <hr>
+                    <hr style="height:3px;border:none;color:#333;background-color:#333;" />
                     <br>
                     <table  style="width: 40%">
                         <caption>Conferences Type-wise</caption>
@@ -183,7 +183,9 @@
                         
                         <% } %>
                     </table>  
-                    <hr><br>
+                   
+                    <hr style="height:3px;border:none;color:#333;background-color:#333;" />
+                    <br>
                     <table  style="width: 40%">
                         <caption>Journals Type-wise</caption>
                         <tr>
@@ -213,7 +215,8 @@
                         
                         <% } %>
                     </table>
-                    <hr><br>
+                    <hr style="height:3px;border:none;color:#333;background-color:#333;" />
+                    <br>
         </div>
     </body>
     

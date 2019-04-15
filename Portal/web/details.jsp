@@ -140,7 +140,7 @@
         <jsp:include page="admin.jsp" />
         <div class="main">
             
-            <h2>Total number of of Regular Faculty in the Department:  <%=count %>   <h2>
+            <h2>Total number of Regular Faculty in the Department:  <%=count %>   <h2>
             
         <h3>Highest Qualification</h3>    
         <form method="post" action=details.jsp?tid=<%=tid%>>    

@@ -16,7 +16,7 @@
     String old = session.getAttribute("pass").toString();
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid").toString();
-    String tname="",start="",end="";
+    String tname="",s="",e="",start="",end="";
     
     if(!((tid).equalsIgnoreCase(para)))
     {
@@ -24,6 +24,8 @@
     }
     
     
+    stmt = con.prepareStatement("select distinct name from Teacher order by name");
+    rs = stmt.executeQuery();
     
     stmt = con.prepareStatement("select distinct year(Start) from WorkshopSeminarOrganised order by year(Start)");
     rs4 = stmt.executeQuery();
@@ -33,26 +35,52 @@
     
     if(request.getParameter("b1")!=null)
     {
-        String s = request.getParameter("sfdp");
-        String e = request.getParameter("efdp");
-        if(s.equalsIgnoreCase("All"))
+        tname = request.getParameter("teacher");
+        
+        s = request.getParameter("sfdp");
+        e = request.getParameter("efdp");
+        
+        
+        if(tname.equalsIgnoreCase("All"))
         {
-            stmt = con.prepareStatement("select * from WorkshopSeminarOrganised order by Start");
+           if(s.equalsIgnoreCase("All")&& e.equalsIgnoreCase("All"))
+            {
+                stmt = con.prepareStatement("select * from WorkshopSeminarOrganised order by Start");
+                rs2 = stmt.executeQuery();
+                m=1;
+
+            }
+           else{
+            stmt = con.prepareStatement("select * from WorkshopSeminarOrganised where "
+                    + "year(Start) >= ? and year(Start)<= ? order by Start");
+            stmt.setString(1,s);
+            stmt.setString(2, e);
             rs2 = stmt.executeQuery();
-            m=1;
+            b=1;
+           
+           }
+        }
+        
+        else if(s.equalsIgnoreCase("All")&& e.equalsIgnoreCase("All"))
+        {
+            stmt = con.prepareStatement("select * from WorkshopSeminarOrganised where TID=(select TID from Teacher where Name = ?) order by Start");
+            stmt.setString(1,tname);
+            rs2 = stmt.executeQuery();
+            l=1;
             
         }
         
         else
         {
-            syear = Integer.parseInt(request.getParameter("sfdp"));
-            eyear = Integer.parseInt(request.getParameter("efdp"));
 
-            stmt = con.prepareStatement("select * from WorkshopSeminarOrganised where "
-                    + "year(Start) >= ? and year(Start)<= ? order by Start");
-            stmt.setInt(1,syear);
-            stmt.setInt(2, eyear);
+            stmt = con.prepareStatement("select * from WorkshopSeminarOrganised where TID=(select TID from Teacher where Name = ?) and"
+                    + " year(Start) >= ? and year(Start)<= ? order by Start");
+            stmt.setString(1,tname);
+            stmt.setString(2,s);
+            stmt.setString(3, e);
             rs2 = stmt.executeQuery();
+            l=1;
+            b=1;
         }
         p=1;
     }
@@ -94,6 +122,14 @@
             
                 <h3>Faculty Development Program/ STTPs Organized</h3>
                 <form method="post" action=fdp_info.jsp?tid=<%=tid%>>
+                    <label>Select Teacher :</label>
+                        <select name="teacher">
+                            <option >All</option>
+                    <% while(rs.next()){   %> 
+
+                    <option > <%=rs.getString(1)%></option>
+                    <% } %>
+                        </select><br>
                     <label>Start Year: </label>
                 <select name="sfdp">
                     
@@ -126,15 +162,16 @@
                 <% if(p==1){
                     if(m==1){ 
                 %>
-                <h3>Total FDPs and STTPs</h3> <% } else { %>
-                <h3>FDP in year(<%=syear %> - <%=eyear %>)</h3> <% } %>
+                <h3>Total FDPs and STTPs</h3> <% } else if(b==1) { %>
+                <h3>FDP in year(<%=s %> - <%=e %>)</h3><% }if(l==1) { %>
+                <h3>by <%= tname %></h3> <% } %>
                 <table>
                 <tr>
                     <th>S.no</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Duration</th>
-                    <th>Resource Persons</th>
+                    <th>Duration</th><% if(l!=1) {%>
+                    <th>Resource Persons</th><% } %>
                 </tr>
                 <% while(rs2.next()) {
                     start = rs2.getDate(4).toLocaleString();
@@ -149,8 +186,8 @@
                     <td><%=++no%></td>
                     <td><%= rs2.getString(3) %></td>
                     <td><%= rs2.getString(8) %></td>
-                    <td><%=start%> to <%=end%></td>
-                    <td><%= rs3.getString(1) %></td>
+                    <td><%=start%> to <%=end%></td><% if(l!=1) {%>
+                    <td><%= rs3.getString(1) %></td><% }%>
                 </tr>
                 <% } }%>
             </table>

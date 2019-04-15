@@ -10,14 +10,16 @@
     DriverManager.registerDriver(new com.mysql.jdbc.Driver());
     Connection con=DriverManager.getConnection("jdbc:mysql://localhost/portal","root","");
     PreparedStatement stmt;
-    ResultSet rs,rs2,rs3=null,rs4=null,rs5=null;
+    ResultSet rs,rs2,rs6,rs3=null,rs4=null,rs5=null;
     String msg="";
-    int no=0,count=0,p=0,k=0,i=0,m=0;
+    int no=0,count=0,p=0,k=0,i=0,m=0,l=0;
     String old = session.getAttribute("pass").toString();
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid").toString();
     String tname="";
-    String year="";
+    String syear="";
+    String eyear="";
+    
     int[] a = new int[10];
     
     if(!((tid).equalsIgnoreCase(para)))
@@ -27,9 +29,13 @@
     
     stmt = con.prepareStatement("select Name from Teacher order by Name asc");
     rs = stmt.executeQuery();
-    
+    stmt = con.prepareStatement("select distinct YearEnd from MtechThesis order by YearEnd desc");
+    rs6 = stmt.executeQuery();
     stmt = con.prepareStatement("select distinct YearEnd from MtechThesis order by YearEnd desc");
     rs2 = stmt.executeQuery();
+    
+    
+    
     
     while(rs2.next())
     {
@@ -46,9 +52,18 @@
     if(request.getParameter("b1")!=null)
     {
         tname = request.getParameter("teacher");
-        year = request.getParameter("year");
+        syear = request.getParameter("syear");
+        eyear = request.getParameter("eyear");
         
-        if(year.equalsIgnoreCase("All"))
+        if(tname.equalsIgnoreCase("All"))
+        {
+            stmt=con.prepareStatement("select * from MtechThesis where "
+                + "YearEnd >= ? and YearEnd <= ? order by YearEnd desc");
+            stmt.setString(1, syear);
+            stmt.setString(2, eyear);
+            l=1;
+        }
+        else if(syear.equalsIgnoreCase("All") && eyear.equalsIgnoreCase("All"))
         {
             stmt=con.prepareStatement("select * from MtechThesis where "
                     + "TID=(select TID from Teacher where Name = ?) "
@@ -58,9 +73,12 @@
         }
         else{
         stmt=con.prepareStatement("select * from MtechThesis where TID=(select TID from Teacher where Name = ?) and "
-                + "YearEnd=? order by YearEnd desc");
+                + "YearEnd>=? and YearEnd<=? order by YearEnd desc");
         stmt.setString(1, tname);
-        stmt.setString(2, year);}
+        stmt.setString(2, syear);
+        stmt.setString(3, eyear);
+        m=1;
+        l=2;}
         rs3 = stmt.executeQuery();
         p=1;
         
@@ -124,34 +142,42 @@
             <br>    
         <form method="post" action=mtech_info.jsp?tid=<%=tid%>>    
             <label>Select Teacher :</label>
-            <select name="teacher">    
+            <select name="teacher">
+                <option >All</option>
         <% while(rs.next()){   %> 
         
         <option > <%=rs.getString(1)%></option>
         <% } %>
         </select>
         <br>
-        <label>Select Completion Year :</label>
-        <select name="year">
+        <label>Select Start Year :</label>
+        <select name="syear">
             <option >All</option>
         <% while(rs2.next()){   %> 
         
-        <option > <%=rs2.getString(1)%></option>
+        <option > <%= rs2.getString(1)%></option>
         <% } %>
-            </select><br>
+            </select>
+        <label>Select End Year :</label>
+        <select name="eyear">
+            <option >All</option>
+        <% while(rs6.next()){   %> 
+        
+        <option > <%= rs6.getString(1)%></option>
+        <% } %>
+            </select>    <br>
             
         
-
         <button type="submit" name="b1" id="b1" >Show</button>
         </form><br>
         
         <% if(p==1) { %>
         <h2>MTech Thesis Supervised</h2>
             <% if (rs3.next() == false) { %>
-            <h5>No M.Tech Entries for <%= tname %> completed in year <%= year %></h5> <%} 
-        else { if(m==1) {%>
-        <h4>by <%= tname %> completed till now</h4> <% } else { %>
-            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4><% } %>
+            <h5>No M.Tech Entries for <%= tname %> completed in year <%= syear %> to <%= eyear %></h5> <%} 
+        else { if(m==1 && l!=2) {%>
+        <h4>by <%= tname %> completed till now</h4> <% } else if(l==1 || l==2) { %>
+            <h4>by <%= tname %> completed in year <%= syear%> to <%= eyear %></h4><% } %>
             <h3>Count = <%=count%> </h3><br> 
             <table style="width: 98%;"> 
                 <caption>Sorted by End Year</caption>
@@ -159,7 +185,8 @@
                 <th>S.No.</th>
                 <th>Registration no.</th> 
                 <th>Name</th>
-                <th>Title</th>
+                <th>Title</th><% if(m!=1) {%>
+                <th>Teacher name</th><% } %>
                 <th>Start Year</th>
             </tr>
             <% do{ no++; %>
@@ -168,7 +195,12 @@
                 <td><%= no %></td>
                 <td><%= rs3.getString(2) %></td> 
                 <td><%= rs3.getString(3) %></td>
-                <td><%= rs3.getString(4) %></td>
+                <td><%= rs3.getString(4) %></td><% if(m!=1)  {
+                stmt = con.prepareStatement("select Name from Teacher where TID='"+rs3.getString(1)+"'");
+                rs6=stmt.executeQuery();
+                while(rs6.next()){
+                %>
+                <td><%= rs6.getString(1) %></td><% }} %>
                 <td><%= rs3.getInt(5) %></td>
             </tr>
 

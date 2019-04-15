@@ -12,11 +12,11 @@
     PreparedStatement stmt;
     ResultSet rs,rs2,rs3=null,rs4=null,rs5,rs6;
     String msg="";
-    int no=0,count=0,p=0,k=0,i=0,m=0;
+    int no=0,count=0,p=0,k=0,i=0,m=0,l=0;
     String old = session.getAttribute("pass").toString();
     String tid = session.getAttribute("tid").toString();
     String para = request.getParameter("tid").toString();
-    String tname="",year="";
+    String tname="",syear="",eyear="";
     int[] a = new int[10];
     
     
@@ -46,10 +46,19 @@
     {
         tname = request.getParameter("teacher");
         
-        year = request.getParameter("year");
+        syear = request.getParameter("syear");
+        eyear = request.getParameter("eyear");
         
         
-        if(year.equalsIgnoreCase("All"))
+        if(tname.equalsIgnoreCase("All"))
+        {
+            stmt=con.prepareStatement("select * from PhdThesis where  "
+                + "EYear>=? and EYear<=? order by EYear desc");
+            stmt.setString(1, syear);
+            stmt.setString(2, eyear);
+            l=1;
+        }
+        else if(syear.equalsIgnoreCase("All") && eyear.equalsIgnoreCase("All"))
         {
             stmt=con.prepareStatement("select * from PhdThesis "
                     + "where TID=(select TID from Teacher where Name = ?)  "
@@ -60,9 +69,12 @@
         }
         else{
         stmt=con.prepareStatement("select * from PhdThesis where TID=(select TID from Teacher where Name = ?) and "
-                + "EYear=? order by EYear desc");
+                + "EYear>=? and EYear<=? order by EYear desc");
         stmt.setString(1, tname);
-        stmt.setString(2, year);
+        stmt.setString(2, syear);
+        stmt.setString(3, syear);
+        l=2;
+        m=1;
         }
         
         
@@ -138,15 +150,27 @@
             <hr style="height:3px;border:none;color:#333;background-color:#333;" /><br>
         <form method="post" action=phd_info.jsp?tid=<%=tid%>>    
             <label>Select Teacher :</label>
-            <select name="teacher">    
+            <select name="teacher"> 
+                <option> All</option>
         <% while(rs.next()){   %> 
         
         <option> <%=rs.getString(1)%></option>
         <% } %>
         </select>
         <br>
-        <label>Select Completion Year :</label>
-        <select name="year">    
+        <label>Select Start Year :</label>
+        <select name="syear">    
+            <option>All</option>
+        <% while(rs2.next()){   %> 
+        
+        <option> <%=rs2.getString(1)%></option>
+        <% }
+        stmt = con.prepareStatement("select distinct EYear from PhdThesis order by EYear desc");
+        rs2 = stmt.executeQuery();   
+        %>
+            </select>
+        <label>Select End Year :</label>
+        <select name="eyear">    
             <option>All</option>
         <% while(rs2.next()){   %> 
         
@@ -162,11 +186,11 @@
         <% if(p==1) { %>
         <h2>Ph.D Thesis Supervised </h2>
             <% if (!rs3.next()) {%>
-            <h5>No Ph.D Entries for <%= tname %> completed in year <%= year %></h5> 
-            <% } else{ if(m==1)  {%>
+            <h5>No Ph.D Entries for <%= tname %> completed in year <%= syear %>to<%= eyear %></h5> 
+            <% } else{ if(m==1 && l!=2)  {%>
             
-            <h4>by <%= tname %> completed till now</h4> <% } else  { %>
-            <h4>by <%= tname %> completed in year <%= rs3.getInt(6)%></h4> <%  }  %>
+            <h4>by <%= tname %> completed till now</h4> <% } else if(l==1 || l==2)  { %>
+            <h4>by <%= tname %> completed in year <%= syear%> to <%= eyear %></h4> <%  }  %>
             <h3>Count = <%=count%> </h3>
             <table style="width: 98%;"> 
                 <caption>Sorted by End Year</caption>
@@ -174,7 +198,8 @@
                 <th>S.No.</th>
                 <th>Registration no.</th> 
                 <th>Name</th>
-                <th>Title</th>
+                <th>Title</th><% if(m!=1) {%>
+                <th>Teacher Name</th><% } %>
                 <th>Start Year</th>
             </tr>
             <% do{ no++; %>
@@ -183,7 +208,12 @@
                 <td><%= no %></td>
                 <td><%= rs3.getString(2) %></td> 
                 <td><%= rs3.getString(3) %></td>
-                <td><%= rs3.getString(4) %></td>
+                <td><%= rs3.getString(4) %></td><% if(m!=1)  {
+                stmt = con.prepareStatement("select Name from Teacher where TID='"+rs3.getString(1)+"'");
+                rs6=stmt.executeQuery();
+                while(rs6.next()){
+                %>
+                <td><%= rs6.getString(1) %></td><% }} %>
                 <td><%= rs3.getInt(5) %></td>
             </tr>
 
